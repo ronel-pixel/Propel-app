@@ -1,0 +1,266 @@
+/* ═══════════════════════════════════════════════
+   PROPEL AI — Auth Modal
+   Enclave Executive Aesthetic
+   ═══════════════════════════════════════════════ */
+
+/* ── Overlay ── */
+
+.am-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: am-fade-in 0.2s ease;
+}
+
+@keyframes am-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Card ── */
+
+.am-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 40px 32px 32px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.15);
+  animation: am-slide-up 0.25s ease;
+}
+
+@keyframes am-slide-up {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Close Button ── */
+
+.am-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  color: #64748B;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.am-close:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+/* ── Header ── */
+
+.am-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.am-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0F172A;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+
+.am-subtitle {
+  font-size: 14px;
+  color: #64748B;
+  line-height: 1.5;
+}
+
+/* ── Social Buttons ── */
+
+.am-social {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.am-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  color: #334155;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.am-social-btn:hover:not(:disabled) {
+  border-color: #CBD5E1;
+  background: #F8FAFC;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.am-social-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Divider ── */
+
+.am-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.am-divider::before,
+.am-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #E2E8F0;
+}
+
+.am-divider span {
+  font-size: 12px;
+  font-weight: 500;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Form ── */
+
+.am-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.am-field {
+  position: relative;
+}
+
+.am-field-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94A3B8;
+  pointer-events: none;
+}
+
+.am-field input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #0F172A;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.am-field input::placeholder {
+  color: #94A3B8;
+}
+
+.am-field input:focus {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.10);
+}
+
+/* ── Hint ── */
+
+.am-hint {
+  font-size: 12px;
+  color: #94A3B8;
+  margin-top: -4px;
+}
+
+/* ── Error ── */
+
+.am-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.12);
+  border-radius: 10px;
+}
+
+/* ── Submit Button ── */
+
+.am-submit {
+  width: 100%;
+  margin-top: 4px;
+  padding: 12px;
+  font-size: 14px;
+}
+
+/* ── Tab Switch ── */
+
+.am-switch {
+  text-align: center;
+  font-size: 13px;
+  color: #64748B;
+  margin-top: 20px;
+}
+
+.am-switch-btn {
+  background: none;
+  border: none;
+  color: #3B82F6;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  padding: 0;
+}
+
+.am-switch-btn:hover {
+  color: #2563EB;
+}
+
+/* ═══════════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  .am-card {
+    padding: 32px 20px 24px;
+    border-radius: 16px;
+  }
+
+  .am-title {
+    font-size: 20px;
+  }
+}

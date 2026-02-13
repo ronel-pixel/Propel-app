@@ -1,0 +1,239 @@
+/* ═══════════════════════════════════════════════
+   PROPEL AI — Landing Page
+   Aviation Hero: Midnight Navy + Glowing Propeller
+   ═══════════════════════════════════════════════ */
+
+/* ── Full-screen dark canvas ── */
+
+.landing {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background: #0A1120;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   Grid / Starfield Background
+   Subtle navigation-system aesthetic
+   ═══════════════════════════════════════════════ */
+
+.lp-grid-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image:
+    linear-gradient(rgba(59, 130, 246, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.4) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 80%);
+}
+
+/* ═══════════════════════════════════════════════
+   Hero Section
+   ═══════════════════════════════════════════════ */
+
+.landing .landing-hero {
+  position: relative;
+  z-index: 1;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 24px 48px;
+  gap: 24px;
+}
+
+/* ═══════════════════════════════════════════════
+   Glowing Propeller
+   ═══════════════════════════════════════════════ */
+
+.lp-propeller-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 12px;
+}
+
+.lp-propeller {
+  width: 160px;
+  height: 160px;
+  animation: lp-spin 10s linear infinite;
+  filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.4));
+}
+
+@keyframes lp-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Outer glow ring */
+.lp-glow-ring {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  box-shadow:
+    0 0 40px rgba(59, 130, 246, 0.08),
+    0 0 80px rgba(59, 130, 246, 0.04),
+    inset 0 0 40px rgba(59, 130, 246, 0.04);
+  pointer-events: none;
+  animation: lp-ring-pulse 4s ease-in-out infinite;
+}
+
+@keyframes lp-ring-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.04); }
+}
+
+/* ═══════════════════════════════════════════════
+   Typography — Light-on-Dark
+   ═══════════════════════════════════════════════ */
+
+.landing .landing-badge {
+  color: #60A5FA;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.landing .landing-heading {
+  font-size: clamp(34px, 5.5vw, 56px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.5px;
+  color: #FFFFFF;
+  max-width: 660px;
+}
+
+.landing .landing-sub {
+  font-size: 17px;
+  line-height: 1.7;
+  color: rgba(148, 163, 184, 0.85);
+  max-width: 520px;
+}
+
+/* ═══════════════════════════════════════════════
+   CTA Button — Pulse Effect
+   ═══════════════════════════════════════════════ */
+
+.landing .landing-cta {
+  position: relative;
+  margin-top: 12px;
+  padding: 14px 36px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  border-radius: 12px;
+  z-index: 1;
+}
+
+/* Pulsing glow ring behind the button */
+.landing .landing-cta::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 16px;
+  background: rgba(59, 130, 246, 0.25);
+  z-index: -1;
+  animation: lp-btn-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes lp-btn-pulse {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.06); }
+}
+
+/* ═══════════════════════════════════════════════
+   Feature Cards — Dark variant
+   ═══════════════════════════════════════════════ */
+
+.landing .landing-features {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 820px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px 72px;
+}
+
+.landing .feature-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+}
+
+.landing .feature-card:hover {
+  border-color: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 4px 32px rgba(59, 130, 246, 0.06);
+  transform: translateY(-2px);
+}
+
+.landing .feature-icon {
+  background: rgba(59, 130, 246, 0.1);
+  border: none;
+  color: #60A5FA;
+}
+
+.landing .feature-card h3 {
+  color: #FFFFFF;
+}
+
+.landing .feature-card p {
+  color: rgba(148, 163, 184, 0.75);
+}
+
+/* ═══════════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .landing .landing-hero {
+    padding: 40px 20px 32px;
+  }
+
+  .lp-propeller-wrap {
+    width: 160px;
+    height: 160px;
+  }
+
+  .lp-propeller {
+    width: 120px;
+    height: 120px;
+  }
+
+  .landing .landing-features {
+    grid-template-columns: 1fr;
+    padding: 0 16px 56px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lp-propeller-wrap {
+    width: 130px;
+    height: 130px;
+  }
+
+  .lp-propeller {
+    width: 100px;
+    height: 100px;
+  }
+
+  .landing .landing-cta {
+    padding: 13px 28px;
+    font-size: 14px;
+  }
+}

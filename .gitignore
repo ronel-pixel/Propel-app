@@ -1,0 +1,33 @@
+# ═══════════════════════════════════════════════
+#  Propel Monorepo — Root .gitignore
+#  Covers propel-frontend/ and propel-backend/
+# ═══════════════════════════════════════════════
+
+# Dependencies
+**/node_modules/
+
+# Build output
+**/dist/
+**/dist-ssr/
+**/build/
+
+# Vercel
+**/.vercel/
+
+# Environment variables (CRITICAL — never commit secrets)
+**/.env
+**/.env.*
+
+# Firebase service account key (CRITICAL)
+**/serviceAccountKey.json
+
+# Logs
+**/logs
+**/*.log
+
+# Editor directories
+**/.vscode/
+**/.idea/
+
+# OS files
+.DS_Store

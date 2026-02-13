@@ -1,0 +1,346 @@
+/* ═══════════════════════════════════════════════
+   PROPEL AI — Payment Modal
+   Professional Light Theme
+   ═══════════════════════════════════════════════ */
+
+/* ──── Overlay ──── */
+
+.pm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ──── Card ──── */
+
+.pm-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 32px 32px;
+  color: var(--text-primary);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.12);
+}
+
+/* ──── Close button ──── */
+
+.pm-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.pm-close:hover {
+  background: var(--border);
+  color: var(--text-primary);
+}
+
+/* ──── Plan view ──── */
+
+.pm-plan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.pm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--blue);
+  background: var(--blue-10);
+  border: 1px solid var(--blue-15);
+  border-radius: 100px;
+  margin-bottom: 24px;
+}
+
+.pm-price {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 1;
+  color: var(--text-heading);
+  margin-bottom: 4px;
+}
+
+.pm-currency {
+  font-size: 28px;
+  font-weight: 500;
+  vertical-align: super;
+  margin-right: 2px;
+  color: var(--text-secondary);
+}
+
+.pm-period {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+.pm-active-badge {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--success);
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  border-radius: 100px;
+}
+
+/* ──── Features ──── */
+
+.pm-features {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+}
+
+.pm-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.pm-features li svg {
+  flex-shrink: 0;
+  color: var(--blue);
+}
+
+/* ──── Divider ──── */
+
+.pm-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 24px;
+}
+
+/* ──── PayPal wrapper ──── */
+
+.pm-paypal-wrap {
+  width: 100%;
+  min-height: 50px;
+}
+
+/* ──── Disclaimer ──── */
+
+.pm-disclaimer {
+  margin-top: 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+
+/* ──── State views (processing / success / error) ──── */
+
+.pm-state-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 24px 0;
+}
+
+.pm-state-view h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.pm-state-view p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 280px;
+}
+
+/* Spinner */
+
+.pm-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: pm-spin 0.8s linear infinite;
+  margin-bottom: 8px;
+}
+
+@keyframes pm-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Success icon */
+
+.pm-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 50%;
+  color: var(--success);
+  margin-bottom: 8px;
+}
+
+.pm-success .btn-primary {
+  margin-top: 12px;
+}
+
+/* Error */
+
+.pm-error h3 {
+  color: var(--danger);
+}
+
+.pm-error .btn-primary {
+  margin-top: 8px;
+}
+
+/* ──── Active subscriber view ──── */
+
+.pm-status-heading {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 12px;
+}
+
+.pm-cancel-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #D97706;
+  background: rgba(217, 119, 6, 0.06);
+  border: 1px solid rgba(217, 119, 6, 0.15);
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.pm-status-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.pm-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.pm-status-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.pm-status-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.pm-cancel-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  margin-bottom: 8px;
+}
+
+.pm-cancel-btn:hover {
+  color: var(--danger);
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.pm-close-btn {
+  width: 100%;
+}
+
+/* ──── Cancelled icon ──── */
+
+.pm-cancelled-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: rgba(217, 119, 6, 0.08);
+  border: 1px solid rgba(217, 119, 6, 0.18);
+  border-radius: 50%;
+  color: #D97706;
+  margin-bottom: 8px;
+}
+
+/* ═══════════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  .pm-card {
+    padding: 32px 20px 24px;
+    border-radius: 16px;
+  }
+
+  .pm-price {
+    font-size: 44px;
+  }
+}
