@@ -13,13 +13,18 @@ const app = express();
 
 /* ── Global Middleware ── */
 
+const allowedOrigins = [
+  'http://localhost:5173',   // Vite dev server
+  'http://localhost:4173',   // Vite preview
+];
+
+// Add production frontend URL from env (set on Render)
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(cors({
-  origin: [
-    'http://localhost:5173',   // Vite dev server
-    'http://localhost:4173',   // Vite preview
-    // Add production domain here when deployed:
-    // 'https://propel-web.vercel.app',
-  ],
+  origin: allowedOrigins,
   credentials: true,
 }));
 
