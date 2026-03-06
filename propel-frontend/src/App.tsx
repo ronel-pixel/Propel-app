@@ -5,6 +5,7 @@ import Dashboard from '@/components/Dashboard';
 import History from '@/pages/History';
 import About from '@/pages/About';
 import Landing from '@/pages/Landing';
+import NotFound from '@/pages/NotFound';
 
 /* ─── Protected Route wrapper ─── */
 
@@ -36,6 +37,7 @@ const App = () => (
         {/* Public routes */}
         <Route path="/about" element={<About />} />
         <Route path="/landing" element={<Landing />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   </BrowserRouter>
