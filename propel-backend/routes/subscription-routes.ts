@@ -6,6 +6,8 @@ const router = express.Router();
 
 const PLAN_CREDITS = 20;
 const PLAN_PRICE = '5.00'; // Both subscription and refuel cost $5.00
+const firstDayOfNextMonth = (baseDate = new Date()) =>
+  new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 1);
 
 /* ═══════════════════════════════════════════════
    PayPal Server-Side Verification
@@ -195,6 +197,8 @@ router.post('/activate', validateToken, async (req: AuthRequest, res: Response) 
         credits: admin.firestore.FieldValue.increment(PLAN_CREDITS),
         extraCredits: 0,
         lastPayment: admin.firestore.FieldValue.serverTimestamp(),
+        lastRefresh: admin.firestore.FieldValue.serverTimestamp(),
+        nextRefreshDate: admin.firestore.Timestamp.fromDate(firstDayOfNextMonth()),
         paypalOrderId,
       });
 

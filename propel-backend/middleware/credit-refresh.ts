@@ -21,12 +21,19 @@ export const refreshCreditsIfNeeded = async (
   next: NextFunction,
 ) => {
   try {
+    const routeInfo = `${req.method} ${req.originalUrl || req.url}`;
     // Attempt to extract UID from the Authorization header
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) return next();
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log(`[CreditRefresh] Skip (${routeInfo}): no bearer token present`);
+      return next();
+    }
 
     const idToken = authHeader.split('Bearer ')[1];
-    if (!idToken) return next();
+    if (!idToken) {
+      console.log(`[CreditRefresh] Skip (${routeInfo}): bearer token empty`);
+      return next();
+    }
 
     let uid: string;
     try {
@@ -34,29 +41,73 @@ export const refreshCreditsIfNeeded = async (
       uid = decoded.uid;
     } catch {
       // Token invalid or expired — skip silently (validateToken will handle rejection)
+      console.warn(`[CreditRefresh] Skip (${routeInfo}): token verification failed`);
       return next();
     }
+
+    const parseDateLike = (value: unknown): Date | null => {
+      if (!value) return null;
+      if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+      if (typeof value === 'string' || typeof value === 'number') {
+        const parsed = new Date(value);
+        return Number.isNaN(parsed.getTime()) ? null : parsed;
+      }
+      if (typeof value === 'object' && value !== null) {
+        const withToDate = value as { toDate?: () => Date };
+        if (typeof withToDate.toDate === 'function') {
+          const parsed = withToDate.toDate();
+          return Number.isNaN(parsed.getTime()) ? null : parsed;
+        }
+      }
+      return null;
+    };
+
+    const firstDayOfNextMonth = (baseDate: Date) =>
+      new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 1);
 
     const userRef = db.collection('users').doc(uid);
     const snap = await userRef.get();
 
     // No user document yet — nothing to refresh
-    if (!snap.exists) return next();
+    if (!snap.exists) {
+      console.log(`[CreditRefresh] Skip (${routeInfo}): user doc missing for ${uid}`);
+      return next();
+    }
 
     const data = snap.data()!;
 
     // Only paying subscribers get a monthly refresh
-    if (!data.isSubscribed) return next();
+    if (!data.isSubscribed) {
+      console.log(`[CreditRefresh] Skip (${routeInfo}): user ${uid} is not subscribed`);
+      return next();
+    }
 
-    // Compare lastRefresh month/year with current date
-    const lastRefresh: Date = data.lastRefresh?.toDate?.() ?? new Date(0);
+    // Compare last refresh with current date and optionally honor explicit nextRefreshDate.
+    const lastRefresh = parseDateLike(data.lastRefresh) ?? new Date(0);
+    const explicitNextRefresh =
+      parseDateLike(data.nextRefreshDate)
+      ?? parseDateLike(data.nextrefreshdate)
+      ?? parseDateLike(data.next_refresh_date);
+    const dueDateFromLastRefresh = firstDayOfNextMonth(lastRefresh);
     const now = new Date();
 
-    const isNewMonth =
-      now.getMonth() !== lastRefresh.getMonth() ||
-      now.getFullYear() !== lastRefresh.getFullYear();
+    // If an explicit next refresh date exists, trust it. Otherwise fallback to month rollover.
+    const isDueForCycle = explicitNextRefresh
+      ? now >= explicitNextRefresh
+      : (now.getMonth() !== lastRefresh.getMonth() || now.getFullYear() !== lastRefresh.getFullYear());
 
-    if (!isNewMonth) return next();
+    console.log(
+      `[CreditRefresh] Checking user=${uid} route="${routeInfo}" `
+      + `isSubscribed=${data.isSubscribed} cancelAtPeriodEnd=${data.cancelAtPeriodEnd === true} `
+      + `paymentFailed=${data.paymentFailed === true} lastRefresh=${lastRefresh.toISOString()} `
+      + `explicitNextRefresh=${explicitNextRefresh ? explicitNextRefresh.toISOString() : 'null'} `
+      + `dueByLastRefresh=${dueDateFromLastRefresh.toISOString()} isDueForCycle=${isDueForCycle}`,
+    );
+
+    if (!isDueForCycle) {
+      console.log(`[CreditRefresh] Skip (${routeInfo}): user ${uid} not yet due for billing-cycle update`);
+      return next();
+    }
 
     /* ── New month boundary reached ── */
 
@@ -74,6 +125,7 @@ export const refreshCreditsIfNeeded = async (
         credits: 0,
         extraCredits: 0,
         lastRefresh: admin.firestore.FieldValue.serverTimestamp(),
+        nextRefreshDate: null,
       });
 
       const reason = data.cancelAtPeriodEnd ? 'user cancellation' : 'payment failure';
@@ -85,15 +137,18 @@ export const refreshCreditsIfNeeded = async (
        */
       const extra = data.extraCredits || 0;
       const newCredits = 20 + extra;
+      const nextRefreshDate = firstDayOfNextMonth(now);
 
       await userRef.update({
         credits: newCredits,
         extraCredits: 0,
         lastRefresh: admin.firestore.FieldValue.serverTimestamp(),
+        nextRefreshDate: admin.firestore.Timestamp.fromDate(nextRefreshDate),
       });
 
       console.log(
-        `[CreditRefresh] Subscriber ${uid} refreshed: 20 base + ${extra} extra = ${newCredits} credits`,
+        `[CreditRefresh] Subscriber ${uid} refreshed: 20 base + ${extra} extra = ${newCredits} credits `
+        + `(next refresh ${nextRefreshDate.toISOString()})`,
       );
     }
   } catch (err) {

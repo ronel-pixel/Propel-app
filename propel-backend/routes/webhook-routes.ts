@@ -5,6 +5,8 @@ const router = express.Router();
 const PAYPAL_BASE = process.env.PAYPAL_MODE === 'live'
   ? 'https://api-m.paypal.com'
   : 'https://api-m.sandbox.paypal.com';
+const firstDayOfNextMonth = (baseDate = new Date()) =>
+  new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 1);
 
 function readHeaderValue(headers: Request['headers'], key: string): string {
   const value = headers[key];
@@ -197,6 +199,7 @@ router.post('/paypal', async (req: Request, res: Response) => {
               cancelAtPeriodEnd: false, // Clear cancellation on successful payment
               lastRefresh: admin.firestore.FieldValue.serverTimestamp(),
               lastPayment: admin.firestore.FieldValue.serverTimestamp(),
+              nextRefreshDate: admin.firestore.Timestamp.fromDate(firstDayOfNextMonth()),
             });
             console.log(`[Webhook] Credits refreshed for user ${userDoc.id}: 20 + ${extra} extra`);
           }
