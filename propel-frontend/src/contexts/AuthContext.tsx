@@ -4,11 +4,8 @@ import {
   onAuthStateChanged,
   User,
   GoogleAuthProvider,
-  GithubAuthProvider,
   signInWithPopup,
   signOut,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { doc, onSnapshot, Timestamp } from 'firebase/firestore';
 import api from '../services/apiService';
@@ -24,12 +21,6 @@ interface AuthContextType {
   loading: boolean;
   /** Google sign-in */
   loginWithGoogle: () => Promise<void>;
-  /** GitHub sign-in */
-  loginWithGithub: () => Promise<void>;
-  /** Email/Password sign-up (creates account) */
-  signUpWithEmail: (email: string, password: string) => Promise<void>;
-  /** Email/Password sign-in (existing account) */
-  signInWithEmail: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   /** Open the payment modal */
   openPayment: () => void;
@@ -145,19 +136,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await signInWithPopup(auth, provider);
   }, []);
 
-  const loginWithGithub = useCallback(async () => {
-    const provider = new GithubAuthProvider();
-    await signInWithPopup(auth, provider);
-  }, []);
-
-  const signUpWithEmailFn = useCallback(async (email: string, password: string) => {
-    await createUserWithEmailAndPassword(auth, email, password);
-  }, []);
-
-  const signInWithEmailFn = useCallback(async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
-  }, []);
-
   const logout = useCallback(() => signOut(auth), []);
 
   /* ── Modal Controls ── */
@@ -171,9 +149,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <AuthContext.Provider
       value={{
         user, credits, isSubscribed, cancelAtPeriodEnd, nextRefreshDate, loading,
-        loginWithGoogle, loginWithGithub,
-        signUpWithEmail: signUpWithEmailFn,
-        signInWithEmail: signInWithEmailFn,
+        loginWithGoogle,
         logout,
         openPayment, closePayment, paymentOpen,
         openAuthModal, closeAuthModal, authModalOpen,
