@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { analysisService } from '@/services/apiService';
 import { useAuth } from '@/contexts/AuthContext';
 import {
-  Send, ChevronDown, ChevronUp, FileText, Clock, Globe,
+  Send, ChevronDown, ChevronUp, FileText, Clock, Globe, ArrowDown,
 } from 'lucide-react';
 import AnalysisView from '@/components/AnalysisView';
 import type { Project } from '@/types/analysis';
@@ -155,70 +156,46 @@ const Dashboard = () => {
         <HeroWatermark />
 
         <div className="dash-hero-inner">
-          {/* ── Executive headline ── */}
-          <h2 className="dash-headline">
-            Propel Your Ambition.</h2>
-            {/* <span className="dash-headline-second">
-              Architect Your Legacy.</span> */}
-          {/* ── Section header row ── */}
-          <div className="section-header-row">
-            <h2 className="section-label dash-hero-label">New Analysis</h2>
+          <motion.span
+            className="dash-hero-badge"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            Enclave Strategic Console
+          </motion.span>
 
-            {/* Language Toggle */}
-            <div className="lang-toggle">
-              <Globe size={14} />
-              <button
-                className={`lang-btn ${language === 'en' ? 'active' : ''}`}
-                onClick={() => setLanguage('en')}
-              >
-                EN
-              </button>
-              <button
-                className={`lang-btn ${language === 'he' ? 'active' : ''}`}
-                onClick={() => setLanguage('he')}
-              >
-                HE
-              </button>
-            </div>
-          </div>
+          <motion.h1
+            className="dash-headline"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.08 }}
+          >
+            AI-Powered Project Analysis
+            <br />
+            for Elite Teams
+          </motion.h1>
 
-          {/* ── The floating form card ── */}
-          {isAnalyzing ? (
-            <PropellerLoader />
-          ) : (
-            <form className="analysis-form" onSubmit={handleSubmit}>
-              <div className="form-field">
-                <label htmlFor="project-title">Project Title</label>
-                <input
-                  id="project-title"
-                  type="text"
-                  placeholder="e.g. FinTrack — AI Budget Planner"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
-              </div>
+          <motion.p
+            className="dash-subheadline"
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.17 }}
+          >
+            Build with institutional clarity. Enclave translates ambition into market, technical,
+            and execution intelligence while your team stays focused on momentum.
+          </motion.p>
 
-              <div className="form-field">
-                <label htmlFor="project-desc">Description</label>
-                <textarea
-                  id="project-desc"
-                  rows={4}
-                  placeholder="Describe your product vision, target market, and what problem it solves…"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  required
-                />
-              </div>
-
-              <button type="submit" className="btn-primary btn-propel" disabled={isAnalyzing}>
-                <Send size={16} />
-                <span>Propel</span>
-              </button>
-            </form>
-          )}
-
-          {error && <p className="error-message">{error}</p>}
+          <motion.a
+            href="#new-analysis"
+            className="dash-scroll-cta"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.24 }}
+          >
+            <ArrowDown size={14} />
+            Start New Analysis
+          </motion.a>
         </div>
       </div>
 
@@ -261,7 +238,7 @@ const Dashboard = () => {
             <section className="history-section">
               <h2 className="section-label">
                 <Clock size={16} />
-                <span>Recent Analysis</span>
+                <span>Recent Analyses</span>
               </h2>
 
               <div className="history-grid">
@@ -282,6 +259,92 @@ const Dashboard = () => {
               </div>
             </section>
           )}
+
+          {projects.length > 1 && (
+            <section className="history-section">
+              <h2 className="section-label">
+                <FileText size={16} />
+                <span>Archive</span>
+              </h2>
+
+              <div className="history-grid">
+                {projects.slice(1, 4).map((project) => (
+                  <button
+                    key={project.id}
+                    className={`history-card ${currentAnalysis?.id === project.id ? 'selected' : ''}`}
+                    onClick={() => selectProject(project)}
+                  >
+                    <span className="history-title">{project.title}</span>
+                    <span className="history-desc">
+                      {project.description.length > 60
+                        ? project.description.slice(0, 58) + '\u2026'
+                        : project.description}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <section id="new-analysis" className="new-analysis-section">
+            <div className="section-header-row">
+              <h2 className="section-label">New Analysis</h2>
+
+              {/* Language Toggle */}
+              <div className="lang-toggle">
+                <Globe size={14} />
+                <button
+                  className={`lang-btn ${language === 'en' ? 'active' : ''}`}
+                  onClick={() => setLanguage('en')}
+                >
+                  EN
+                </button>
+                <button
+                  className={`lang-btn ${language === 'he' ? 'active' : ''}`}
+                  onClick={() => setLanguage('he')}
+                >
+                  HE
+                </button>
+              </div>
+            </div>
+
+            {isAnalyzing ? (
+              <PropellerLoader />
+            ) : (
+              <form className="analysis-form" onSubmit={handleSubmit}>
+                <div className="form-field">
+                  <label htmlFor="project-title">Project Title</label>
+                  <input
+                    id="project-title"
+                    type="text"
+                    placeholder="e.g. FinTrack — AI Budget Planner"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="project-desc">Description</label>
+                  <textarea
+                    id="project-desc"
+                    rows={4}
+                    placeholder="Describe your product vision, target market, and what problem it solves…"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <button type="submit" className="btn-primary btn-propel" disabled={isAnalyzing}>
+                  <Send size={16} />
+                  <span>Propel</span>
+                </button>
+              </form>
+            )}
+
+            {error && <p className="error-message">{error}</p>}
+          </section>
         </div>
       </div>
 
