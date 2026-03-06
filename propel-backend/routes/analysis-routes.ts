@@ -5,6 +5,7 @@ import { validateToken, AuthRequest } from '../middleware/auth-middleware';
 
 const router = express.Router();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
+const FREE_ARCHIVE_VISIBLE_ITEMS = 3;
 
 /**
  * Builds a professional, McKinsey-standard prompt for Gemini.
@@ -164,6 +165,9 @@ router.get('/projects', validateToken, async (req: AuthRequest, res: Response) =
   const userId = req.user?.uid;
 
   try {
+    const userSnap = await db.collection('users').doc(userId as string).get();
+    const isSubscribed = userSnap.exists ? (userSnap.data()?.isSubscribed === true) : false;
+
     const snapshot = await db.collection('projects')
       .where('userId', '==', userId)
       .orderBy('createdAt', 'desc')
@@ -174,7 +178,18 @@ router.get('/projects', validateToken, async (req: AuthRequest, res: Response) =
       ...doc.data()
     }));
 
-    res.status(200).json(projects);
+    if (isSubscribed) {
+      return res.status(200).json(projects);
+    }
+
+    // Secure-by-default: non-subscribers can only access recent archive entries.
+    const limitedProjects = projects.slice(0, FREE_ARCHIVE_VISIBLE_ITEMS);
+    console.warn(
+      `[Security][Paywall] Limited archive access for non-subscriber ${userId}: `
+      + `${limitedProjects.length}/${projects.length} items returned`,
+    );
+
+    return res.status(200).json(limitedProjects);
   } catch (error) {
     console.error("Fetch All Projects Error:", error);
     res.status(500).json({ error: "Failed to fetch your projects history" });
@@ -183,7 +198,7 @@ router.get('/projects', validateToken, async (req: AuthRequest, res: Response) =
 
 // Read (Single)
 router.get('/projects/:id', validateToken, async (req: AuthRequest, res: Response) => {
-  const projectId = req.params.id;
+  const projectId = String(req.params.id);
   const userId = req.user?.uid;
 
   try {
@@ -197,6 +212,27 @@ router.get('/projects/:id', validateToken, async (req: AuthRequest, res: Respons
 
     if (projectData?.userId !== userId) {
       return res.status(403).json({ error: "Unauthorized access to this project" });
+    }
+
+    const userSnap = await db.collection('users').doc(userId as string).get();
+    const isSubscribed = userSnap.exists ? (userSnap.data()?.isSubscribed === true) : false;
+
+    if (!isSubscribed) {
+      const latestSnapshot = await db.collection('projects')
+        .where('userId', '==', userId)
+        .orderBy('createdAt', 'desc')
+        .limit(FREE_ARCHIVE_VISIBLE_ITEMS)
+        .get();
+
+      const allowedIds = new Set(latestSnapshot.docs.map((projectDoc) => projectDoc.id));
+      if (!allowedIds.has(projectId)) {
+        console.warn(
+          `[Security][Paywall] Blocked project access for non-subscriber ${userId}: ${projectId}`,
+        );
+        return res.status(403).json({
+          error: "Archive access requires an active subscription for older analyses.",
+        });
+      }
     }
 
     res.status(200).json({
