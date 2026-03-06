@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LogOut, Archive, Info, Crown, User, ChevronDown } from 'lucide-react';
+import { LogOut, Archive, Info, Crown, User, ChevronDown, Menu, X } from 'lucide-react';
 
 /* ─── Propeller Logo (replaces Zap) ─── */
 
@@ -44,17 +44,32 @@ const Header = () => {
   const { user, credits, isSubscribed, cancelAtPeriodEnd, nextRefreshDate, logout, openPayment, openAuthModal } = useAuth();
   const { pathname } = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDropdownOpen(false);
       }
+      if (
+        mobileMenuRef.current
+        && !mobileMenuRef.current.contains(e.target as Node)
+        && mobileMenuButtonRef.current
+        && !mobileMenuButtonRef.current.contains(e.target as Node)
+      ) {
+        setMobileMenuOpen(false);
+      }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   return (
     <header className="app-header">
@@ -65,19 +80,19 @@ const Header = () => {
           <span className="header-brand-ai">AI</span>
         </Link>
 
-        <nav className="header-nav">
+        <nav className={`header-nav ${mobileMenuOpen ? 'open' : ''}`} ref={mobileMenuRef}>
           {user && (
             <>
-              <Link to="/" className={`header-nav-link ${pathname === '/' ? 'active' : ''}`}>
+              <Link to="/" className={`header-nav-link ${pathname === '/' ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
                 Dashboard
               </Link>
-              <Link to="/history" className={`header-nav-link ${pathname === '/history' ? 'active' : ''}`}>
+              <Link to="/history" className={`header-nav-link ${pathname === '/history' ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
                 <Archive size={14} />
                 Archive
               </Link>
             </>
           )}
-          <Link to="/about" className={`header-nav-link ${pathname === '/about' ? 'active' : ''}`}>
+          <Link to="/about" className={`header-nav-link ${pathname === '/about' ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
             <Info size={14} />
             About
           </Link>
@@ -85,6 +100,16 @@ const Header = () => {
       </div>
 
       <div className="header-actions">
+        <button
+          ref={mobileMenuButtonRef}
+          className="mobile-menu-toggle"
+          aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={mobileMenuOpen}
+          onClick={() => setMobileMenuOpen((v) => !v)}
+        >
+          {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+        </button>
+
         {user ? (
           <>
             <button className="header-credits" onClick={openPayment} title="Manage credits">

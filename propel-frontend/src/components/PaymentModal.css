@@ -41,8 +41,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -292,6 +292,7 @@
 
 .pm-cancel-btn {
   width: 100%;
+  min-height: 44px;
   padding: 10px;
   font-size: 13px;
   font-weight: 500;
@@ -313,6 +314,7 @@
 
 .pm-close-btn {
   width: 100%;
+  min-height: 44px;
 }
 
 /* ──── Cancelled icon ──── */
